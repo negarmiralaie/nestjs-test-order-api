@@ -1,6 +1,6 @@
 import { UserService } from './users.service';
-import { Body, Controller, Get, Param, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiResponse } from '@src/common/interfaces/response.interface';
 
@@ -31,7 +31,23 @@ export class UsersController {
   }
 
   @Get(':id/orders')
-  getUserOrders(@Param('id') id: string): Promise<ApiResponse> {
-    return this.userService.getUserOrders(id);
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: 'number',
+    description: 'Page for pagination',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: 'number',
+    description: 'Limit for pagination',
+  })
+  getUserOrders(
+    @Param('id') id: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<ApiResponse> { 
+    return this.userService.getUserOrders(id, page, limit);
   }
 }
