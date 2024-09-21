@@ -1,31 +1,43 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { join } from 'path';
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
-export const typeOrmConfig: TypeOrmModuleOptions = {
+const isCompiled = __filename.endsWith('.js');
+
+const entitiesPath = isCompiled
+  ? join(__dirname, 'dist', 'src', '**', '*.entity.js')
+  : join(__dirname, 'src', '**', '*.entity.ts');
+
+const migrationsPath = isCompiled
+  ? join(__dirname, 'dist', 'src', 'migrations', '**', '*.js')
+  : join(__dirname, 'src', 'migrations', '**', '*.ts');
+
+const commonConfig: PostgresConnectionOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
-  port: +process.env.DB_PORT,
+  port: parseInt(process.env.DB_PORT, 10),
   database: process.env.DB_DATABASE_NAME,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   logging: true,
-  // migrations: ['migrations/**'],
-  migrations: [__dirname + '/migrations/**/*.js'],
+  entities: [entitiesPath],
+  migrations: [migrationsPath],
   migrationsRun: true,
-  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
 };
 
+export const typeOrmConfig: TypeOrmModuleOptions = {
+  ...commonConfig,
+  autoLoadEntities: true,
+};
 
-  // type: 'postgres',
-  // host: process.env.DB_HOST,
-  // port: +process.env.DB_PORT,
-  // database: process.env.DB_DATABASE_NAME,
-  // username: process.env.DB_USERNAME,
-  // password: process.env.DB_PASSWORD,
-  // logging: true,
-  // migrations: [__dirname + '/migrations/**/*.js'],
-  // migrationsRun: true,
-  // entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+export const dataSourceOptions: DataSourceOptions = {
+  ...commonConfig,
+};
 
-// Exporting this object allows for easy import in app.module.ts
+const AppDataSource = new DataSource(dataSourceOptions);
+
+export default AppDataSource;
