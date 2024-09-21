@@ -1,14 +1,44 @@
+// {
+//   "compilerOptions": {
+//     "module": "commonjs",
+//     "declaration": true,
+//     "removeComments": true,
+//     "emitDecoratorMetadata": true,
+//     "experimentalDecorators": true,
+//     "allowSyntheticDefaultImports": true,
+//     "target": "ES2021",
+//     "paths": {
+//       "*": ["src/*"]
+//     },
+//     "sourceMap": true,
+//     "outDir": "./dist",
+//     "baseUrl": "./",
+//     "incremental": true,
+//     "skipLibCheck": true,
+//     "strictNullChecks": false,
+//     "noImplicitAny": false,
+//     "strictBindCallApply": false,
+//     "forceConsistentCasingInFileNames": false,
+//     "noFallthroughCasesInSwitch": false
+//   },
+//   "include": ["src/**/*"],
+// }
+
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "commonjs",                      // CommonJS for compatibility
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,                   // Ensure compatibility with ES modules
     "target": "ES2021",
+    "paths": {
+      "@src/*": ["src/*"]                      // Explicit path alias
+    },
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./dist",                        // Output compiled JS to dist
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
@@ -17,5 +47,7 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "include": ["src/**/*"],                     // Ensure all source files are included
+  "exclude": ["node_modules"]
 }

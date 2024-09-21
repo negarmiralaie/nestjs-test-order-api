@@ -13,9 +13,6 @@ export class AbstractEntity<T> {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ type: 'varchar', length: 36, unique: true, nullable: true })
-  humanReadableId: string;
-
   constructor(entity: Partial<T> = {}) {
     Object.assign(this, entity);
   }
